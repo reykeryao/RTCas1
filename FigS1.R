@@ -90,7 +90,7 @@ NTA2<-NTA2[,1:2]
 
 
 
-pdf("FigS1B.pdf")
+pdf("FigS1C.pdf")
 scol <- c(brewer.pal(8, "Set3"),brewer.pal(8, "Set1"))
 mp<-barplot(as.matrix(NTA2),col=scol,axes=F,
             names.arg=NTAsum,
@@ -160,7 +160,7 @@ for (i in 1:dim(RTD_gen)[1]){
   }
 }
 
-pdf("FigS1C.pdf",family = "ArialMT",width=10,height=5)
+pdf("FigS1B.pdf",family = "ArialMT",width=10,height=5)
 plot(density(WT_gen$Gene_pos),main="Relative position of acquired spacers",
      xlab=c("Genebody (5' to 3', %)"),ylab="Density")
 lines(density(RTD_gen$Gene_pos),col="red")
