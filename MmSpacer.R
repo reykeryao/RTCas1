@@ -508,6 +508,7 @@ plotspcar_stack3(df1,"RTdelat")
 dev.off()
 
 
+
 ###
 data_df<-RTD[RTD$Sp_type!="U",]
 tmp<-data.frame("Nucl"=c("A","G","C","T"))
@@ -582,6 +583,99 @@ for (i in 1:4){
   }
 }
 
+
+####no rearrangement
+### arrange 3
+### encoded spacers are always in sense orientation
+### isolate spacers mapped to know gene (can define sense/antisense) 
+### and with SS in at only one end
+### but RTD is not rearranged, it's as
+WT<-read.delim("MMB1_WT_sp_detail.info")
+RTD<-read.delim("MMB1_RTdelta_sp_detail.info")
+
+WT<-WT[WT$Temp_type!="U",]
+WT<-WT[WT$SS5==0 | WT$SS3==0,]
+RTD<-RTD[RTD$Temp_type!="U",]
+RTD<-RTD[RTD$SS5==0 | RTD$SS3==0,]
+
+### rearrange spacers into sense only, 2 type2 sense-SS, or SS-sense
+WT$SSeq5<-""
+WT$SpacerSeq<-""
+WT$SSeq3<-""
+for (i in 1:dim(WT)[1]){
+  if (WT$SS5[i]>0){
+    WT$SSeq5[i]<-WT$SS5_seq[i]
+    WT$SpacerSeq[i]<-substr(WT$Seq[i],WT$SS5[i]+1,nchar(WT$Seq[i]))
+  } else if (WT$SS3[i]>0) {
+    WT$SpacerSeq[i]<-substr(WT$Seq[i],1,nchar(WT$Seq[i])-WT$SS3[i])
+    WT$SSeq3[i]<-WT$SS3_seq[i]
+  } else {
+    WT$SpacerSeq[i]<-WT$Seq[i]
+  }
+}
+
+RTD$SSeq5<-""
+RTD$SpacerSeq<-""
+RTD$SSeq3<-""
+for (i in 1:dim(RTD)[1]){
+  if (RTD$SS5[i]>0){
+    RTD$SSeq5[i]<-RTD$SS5_seq[i]
+    RTD$SpacerSeq[i]<-substr(RTD$Seq[i],RTD$SS5[i]+1,nchar(RTD$Seq[i]))
+  } else if (RTD$SS3[i]>0) {
+    RTD$SpacerSeq[i]<-substr(RTD$Seq[i],1,nchar(RTD$Seq[i])-RTD$SS3[i])
+    RTD$SSeq3[i]<-RTD$SS3_seq[i]
+  } else {
+    RTD$SpacerSeq[i]<-RTD$Seq[i]
+  }
+}
+
+
+## Fig1D-ver4 based on rearrangement 3, only sense were shown
+pdf("Fig1D-4.pdf",width=8,height=8)
+par(mfrow=c(2,2),cex=0.7)
+#from the start of the soft-clipped seq (+1 to +5 from the end of the sapcer)
+plotspcar_stack5<-function(data_df,title){
+  tmp<-data.frame("Nucl"=c("A","G","C","T"))
+  for (i in 1:5){
+    tmp<-merge(tmp,data.frame(table(substr(data_df$SSeq5,nchar(data_df$SSeq5)+1-i,nchar(data_df$SSeq5)+1-i))),
+               by=1,all.x=T)
+  }
+  y_max<-round(max(colSums(tmp[,2:6]))/500)*500
+  tmp<-tmp[,c(1,6,5,4,3,2)]
+  colnames(tmp)[2:6]<-c("-5","-4","-3","-2","-1")
+  df.bar <-barplot(as.matrix(tmp[,2:6]),ylab="Spacers", 
+                   main=paste0(title," (5' end non-encoded nucleotides)"),
+                   width = 0.1, ylim=c(0,y_max),
+                   beside = F,col=c("green","blue","chocolate","red"),
+                   args.legend = list(x="right",bty="n"),legend.text = tmp$Nucl,
+                   space=0.1,xlim=c(0,0.7),xlab="Position from the begining of spacer")
+}
+
+plotspcar_stack3<-function(data_df,title){
+  tmp<-data.frame("Nucl"=c("A","G","C","T"))
+  for (i in 1:5){
+    tmp<-merge(tmp,data.frame(table(substr(data_df$SSeq3,i,i))),by=1,all.x=T)
+  }
+  y_max<-round(max(colSums(tmp[,2:6]))/500)*500
+  colnames(tmp)[2:6]<-c("1","2","3","4","5")
+  df.bar <-barplot(as.matrix(tmp[,2:6]),ylab="Spacers", 
+                   main=paste0(title," (3' end non-encoded nucleotides)"),
+                   width = 0.1, ylim=c(0,y_max),
+                   beside = F,col=c("green","blue","chocolate","red"),
+                   args.legend = list(x="right",bty="n"),legend.text = tmp$Nucl,
+                   space=0.1,xlim=c(0,0.7),xlab="Position from the end of spacer")
+}
+df1<-WT[WT$Sp_type!="U",]
+df1<-df1[df1$Temp_type=="S",]
+plotspcar_stack5(df1,"WT")
+plotspcar_stack3(df1,"WT")
+
+df1<-RTD[RTD$Sp_type!="U",]
+df1<-df1[df1$Temp_type=="S",]
+plotspcar_stack5(df1,"RTD")
+plotspcar_stack3(df1,"RTD")
+
+dev.off()
 
 
 
