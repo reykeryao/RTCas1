@@ -84,7 +84,7 @@ NTA2$pvalue<-apply(NTA2,1,function(x){chisq.test(rbind(x,NTAsum))$p.value})
 NTA2$sign<-""
 NTA2[,1:2]<-100*prop.table(as.matrix(NTA2[,1:2]),2)
 
-NTA2$sign[NTA2$pvalue<0.001 & NTA2$WT.Freq>NTA2$RTD.Freq]<-"*"
+NTA2$sign[NTA2$pvalue<0.01 & NTA2$WT.Freq>NTA2$RTD.Freq]<-"*"
 row.names(NTA2)<-paste0(row.names(NTA2),NTA2$sign)
 NTA2<-NTA2[,1:2]
 
@@ -160,7 +160,7 @@ for (i in 1:dim(RTD_gen)[1]){
   }
 }
 
-pdf("FigS1B.pdf",family = "ArialMT",width=10,height=5)
+pdf("FigS1D.pdf",family = "ArialMT",width=10,height=5)
 plot(density(WT_gen$Gene_pos),main="Relative position of acquired spacers",
      xlab=c("Genebody (5' to 3', %)"),ylab="Density")
 lines(density(RTD_gen$Gene_pos),col="red")

@@ -75,8 +75,8 @@ for (i in 1:dim(RTD)[1]){
 }
 
 
-## Fig1D
-pdf("Fig1D.pdf",width=8,height=3)
+## Fig1C
+pdf("Fig1C.pdf",width=8,height=3)
 par(mfrow=c(1,2),cex=0.7)
 #from the start of the soft-clipped seq (+1 to +5 from the end of the sapcer)
 plotspcar_stack<-function(data_df,title){
@@ -631,7 +631,7 @@ for (i in 1:dim(RTD)[1]){
 
 
 ## Fig1D-ver4 based on rearrangement 3, only sense were shown
-pdf("Fig1D-4.pdf",width=8,height=8)
+pdf("FigS1B.pdf",width=8,height=7)
 par(mfrow=c(2,2),cex=0.7)
 #from the start of the soft-clipped seq (+1 to +5 from the end of the sapcer)
 plotspcar_stack5<-function(data_df,title){
@@ -680,7 +680,7 @@ dev.off()
 
 
 
-### Fig1E not affected by rearrangement
+### Fig1D not affected by rearrangement
 
 Full<-data.frame(table(nchar(WT$Seq)))
 Full<-merge(Full,data.frame(table(nchar(RTD$Seq))),by=1,all=T)
@@ -701,7 +701,7 @@ WoSS<-merge(Len,WoSS,by=1,all=T)
 WoSS[is.na(WoSS)]<-0
 WoSS[,2:3]<-100*prop.table(as.matrix(WoSS[,2:3]),margin =2)
 
-pdf("Fig1E.pdf",height=3,width=8)
+pdf("Fig1D.pdf",height=3,width=8)
 par(mfrow=c(1,2),bty="n",cex=0.7)
 Full<-Full[Full$Len<=50,]
 plot(Full$`Mm-WT`~Full$Len,type="l",col="black",xlim=c(20,50),yaxt="n",
